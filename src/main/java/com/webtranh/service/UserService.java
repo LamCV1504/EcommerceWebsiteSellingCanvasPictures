@@ -1,12 +1,15 @@
 package com.webtranh.service;
 
 import com.webtranh.config.exception.ResourceNotFoundException;
+import com.webtranh.controller.auth.models.FormLogin;
+import com.webtranh.controller.auth.models.TokenResponse;
 import com.webtranh.controller.user.models.UserRequest;
 import com.webtranh.controller.user.models.UserResponse;
 import com.webtranh.controller.user.models.UserUpdate;
 import com.webtranh.dto.UserMapper;
 import com.webtranh.repository.user.UserEntity;
 import com.webtranh.repository.user.UserRepository;
+import com.webtranh.util.JwtUtil;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,6 +25,7 @@ public class UserService {
     @NonNull final UserRepository userRepository;
     @NonNull final UserMapper userMapper;
     @NonNull final PasswordEncoder passwordEncoder;
+    @NonNull final JwtUtil jwtUtil;
 
     public void register(UserRequest user) {
         UserEntity newUser = userMapper.toEntity(user);
@@ -49,5 +53,16 @@ public class UserService {
         return new PageImpl<>(userMapper.toDto(foundUser.getContent()),
                               pageRequest,
                               foundUser.getTotalElements());
+    }
+
+    public TokenResponse login(FormLogin formLogin) {
+        UserEntity foundUser = userRepository.findByEmail(formLogin.email())
+                .orElseThrow(() -> new ResourceNotFoundException("Email chưa đăng ký"));
+        if(!passwordEncoder.matches(formLogin.password(), foundUser.getPassword()))
+            throw new ResourceNotFoundException("Mật khẩu sai");
+        return TokenResponse.builder()
+                            .accessToken(jwtUtil.generateAccessToken(foundUser.getUserId()))
+                            .refreshToken(jwtUtil.generateRefreshToken(foundUser.getUserId()))
+                            .build();
     }
 }
