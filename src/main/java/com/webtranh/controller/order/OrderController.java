@@ -10,6 +10,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 public class OrderController implements OrderAPI {
@@ -19,6 +21,11 @@ public class OrderController implements OrderAPI {
     @Override
     public OrderResponse getOrderById(Integer orderId) {
         return orderService.getOrderById(orderId);
+    }
+    @Override
+
+    public List<OrderResponse> getOrderByCustomerId(Integer customerId) {
+        return orderService.getOrderByCustomerId(customerId);
     }
 
 

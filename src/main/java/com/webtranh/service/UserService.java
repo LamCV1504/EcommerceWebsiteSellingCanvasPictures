@@ -7,6 +7,7 @@ import com.webtranh.controller.user.models.UserRequest;
 import com.webtranh.controller.user.models.UserResponse;
 import com.webtranh.controller.user.models.UserUpdate;
 import com.webtranh.dto.UserMapper;
+import com.webtranh.repository.category.CategoryEntity;
 import com.webtranh.repository.user.UserEntity;
 import com.webtranh.repository.user.UserRepository;
 import com.webtranh.util.JwtUtil;
@@ -18,6 +19,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -28,9 +32,13 @@ public class UserService {
     @NonNull final JwtUtil jwtUtil;
 
     public void register(UserRequest user) {
+        Optional<UserEntity> foundUser = userRepository.findByEmail(user.email());
+        if (foundUser.isPresent()) {
+            throw new ResourceNotFoundException("Địa chỉ email đã tồn tại");
+        }
         UserEntity newUser = userMapper.toEntity(user);
         newUser.setPassword(passwordEncoder.encode(user.password()));
-        userRepository.save(userMapper.toEntity(user));
+        userRepository.save(newUser);
     }
 
     public UserResponse getUserById(Integer userId) {
@@ -63,6 +71,7 @@ public class UserService {
         return TokenResponse.builder()
                             .accessToken(jwtUtil.generateAccessToken(foundUser.getUserId()))
                             .refreshToken(jwtUtil.generateRefreshToken(foundUser.getUserId()))
+                            .userId(foundUser.getUserId())
                             .build();
     }
 }

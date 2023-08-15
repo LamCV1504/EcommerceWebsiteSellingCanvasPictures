@@ -14,6 +14,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class CategoryService {
@@ -23,7 +25,10 @@ public class CategoryService {
     @NonNull final CategoryMapper categoryMapper;
 
     public void addNewCategory(CategoryRequest category) {
-        CategoryEntity newCategory = categoryMapper.toEntity(category);
+        List<CategoryEntity> foundCategory = categoryRepository.findByCategoryName(category.categoryName().trim());
+        if (foundCategory.size()>0) {
+            throw new ResourceNotFoundException("Tên bộ sưu tập đã tồn tại");
+        }
         categoryRepository.save(categoryMapper.toEntity(category));
     }
 

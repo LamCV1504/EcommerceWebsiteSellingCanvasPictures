@@ -3,6 +3,8 @@ package com.webtranh.controller.category;
 import com.webtranh.controller.category.models.CategoryRequest;
 import com.webtranh.controller.category.models.CategoryResponse;
 import com.webtranh.controller.category.models.CategoryUpdate;
+import com.webtranh.repository.category.CategoryEntity;
+import com.webtranh.repository.category.CategoryRepository;
 import com.webtranh.service.CategoryService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -10,11 +12,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 public class CategoryController implements CategoryAPI {
 
     @NonNull final CategoryService categoryService;
+    @NonNull final CategoryRepository categoryRepository;
 
     @Override
     public CategoryResponse getCategoryById(Integer categoryId) {
@@ -30,6 +35,7 @@ public class CategoryController implements CategoryAPI {
 
     @Override
     public void addNewCategory(CategoryRequest category) {
+
         categoryService.addNewCategory(category);
     }
 

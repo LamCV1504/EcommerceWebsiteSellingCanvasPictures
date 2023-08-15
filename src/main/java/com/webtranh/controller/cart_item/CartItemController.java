@@ -3,12 +3,15 @@ package com.webtranh.controller.cart_item;
 import com.webtranh.controller.cart_item.models.CartItemRequest;
 import com.webtranh.controller.cart_item.models.CartItemResponse;
 import com.webtranh.controller.cart_item.models.CartItemUpdate;
+import com.webtranh.controller.cart_item.models.ProductItem;
 import com.webtranh.service.CartItemService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,9 +26,8 @@ public class CartItemController implements CartItemAPI {
 
 
     @Override
-    public Page<CartItemResponse> getCartItemPaging(Integer page, Integer size) {
-        PageRequest pageRequest = PageRequest.of(page, size);
-        return cartItemService.getCartItemPaging(pageRequest);
+    public List<ProductItem> getCartItemPaging(Integer userId) {
+        return cartItemService.getCartItemPaging(userId);
     }
 
     @Override
@@ -39,7 +41,7 @@ public class CartItemController implements CartItemAPI {
     }
 
     @Override
-    public void deleteOrder(Integer orderId) {
-        cartItemService.deleteCartItem(orderId);
+    public void deleteCartItem(Integer cartItemId) {
+        cartItemService.deleteCartItem(cartItemId);
     }
 }

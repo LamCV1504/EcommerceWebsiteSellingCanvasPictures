@@ -21,5 +21,5 @@ public class PromotionDetailEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private Integer promotionId;
-    private String categoryId;
+    private Integer categoryId;
     }

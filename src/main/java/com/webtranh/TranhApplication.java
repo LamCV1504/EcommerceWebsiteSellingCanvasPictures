@@ -10,8 +10,6 @@ public class TranhApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(TranhApplication.class, args);
-
-		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
 	}
 
 }

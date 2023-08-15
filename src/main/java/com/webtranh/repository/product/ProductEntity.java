@@ -26,5 +26,4 @@ public class ProductEntity {
     private Integer unitPrice;
     private Integer quantity;
     private Integer categoryId;
-
 }

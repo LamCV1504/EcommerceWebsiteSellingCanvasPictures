@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 
 @Data
@@ -18,13 +19,15 @@ public class OrderEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer orderId;
     private Integer customerId;
-    private LocalDate purchaseTime;
+    private LocalDateTime purchaseTime;
     @Enumerated(EnumType.STRING)
     private EOrderStatus orderStatus;
     private String shippingAddress;
     private String consigneeName;
     private String consigneePhone;
     private Integer employeeId;
+    private String notes;
+    private Double total;
 }
 
 

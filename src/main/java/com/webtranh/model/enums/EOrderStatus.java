@@ -1,9 +1,9 @@
 package com.webtranh.model.enums;
 
 public enum EOrderStatus {
-    AWAITING,
+    PENDING,
     CONFIRMED,
-    DELIVERY,
+    DELIVERING,
     COMPLETED,
     CANCELED
 }

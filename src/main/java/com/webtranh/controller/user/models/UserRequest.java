@@ -12,9 +12,9 @@ import java.time.LocalDate;
 public record UserRequest(
         @NotNull String firstName,
         @NotNull String lastName,
-        @NotNull LocalDate dob,
+        LocalDate dob,
         @Enumerated(EnumType.STRING)
-        @NotNull ESex sex,
+        ESex sex,
         @NotNull String address,
         @Email String email,
         @NotBlank String phone,

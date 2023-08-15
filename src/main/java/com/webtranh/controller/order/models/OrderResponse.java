@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public record OrderResponse(
+        Integer orderId,
        Integer customerId,
        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
        LocalDateTime purchaseTime,
@@ -18,6 +19,6 @@ public record OrderResponse(
        String shippingAddress,
        String consigneePhone,
        String consigneeName,
-       Integer employeeId,
-       String notes
+       String notes,
+        Integer total
 ) {}

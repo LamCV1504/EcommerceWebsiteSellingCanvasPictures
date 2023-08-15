@@ -17,7 +17,19 @@ public class OrderDetailEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    private Integer orderId;
     private Integer productId;
-    private Integer userId;
+    private Integer price;
     private Integer quantity;
+    private Integer discount;
+
+    public OrderDetailEntity updateOrderId(Integer orderId) {
+        return OrderDetailEntity.builder()
+                .orderId(orderId)
+                .productId(productId)
+                .price(price)
+                .quantity(quantity)
+                .discount(discount)
+                .build();
+    }
 }
