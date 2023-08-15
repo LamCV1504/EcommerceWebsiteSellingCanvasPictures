@@ -1,5 +1,6 @@
 package com.webtranh.service;
 
+import com.webtranh.config.exception.RequestInvalidException;
 import com.webtranh.config.exception.ResourceNotFoundException;
 import com.webtranh.controller.cart_item.models.ProductItem;
 import com.webtranh.controller.order.models.OrderRequest;
@@ -17,6 +18,7 @@ import com.webtranh.repository.order.OrderRepository;
 import com.webtranh.repository.order_detail.OrderDetailEntity;
 import com.webtranh.repository.order_detail.OrderDetailRepository;
 import com.webtranh.repository.product.ProductEntity;
+import com.webtranh.repository.product.ProductRepository;
 import com.webtranh.repository.promotion.PromotionEntity;
 import com.webtranh.repository.promotion.PromotionRepository;
 import lombok.NonNull;
@@ -46,12 +48,23 @@ public class OrderService {
     @NonNull final ProductMapper productMapper;
     @NonNull final OrderDetailRepository orderDetailRepository;
     @NonNull final PromotionRepository promotionRepository;
+    @NonNull final ProductRepository productRepository;
 
     @Transactional
     public void addNewOrder(OrderRequest order) {
         List<ProductItem> foundCart = cartItemRepository.findAllByUserId(order.customerId())
                 .stream().map(data -> productMapper.toDto((ProductEntity) data[0],(Integer) data[1], (Integer) data[2], (Long) data[3], (Integer) data[4]))
                 .toList();
+
+        Map<Integer, Integer> cart = foundCart.stream().collect(Collectors.toMap(ProductItem::productId, ProductItem::quantity));
+        List<ProductEntity> products = productRepository.findAllById(foundCart.stream().map(ProductItem::productId).collect(Collectors.toList()));
+        products.stream().forEach(xx -> {
+           if(xx.getQuantity() < cart.get(xx.getProductId())) {
+               throw new RequestInvalidException(String.format("Số lượng sản phẩm '%s' không đủ", xx.getProductName()));
+           }
+        });
+        productRepository.saveAll(products.stream().map(xx -> productMapper.updateQuantity(xx.getQuantity()-cart.get(xx.getProductId()), xx)).toList());
+
         Map<Integer, Integer> foundPromotion = promotionRepository.findByProductId(foundCart.stream().map(ProductItem::productId).toList(), LocalDate.now())
                 .stream().map(data -> new ProductPromotion((Integer)data[0],(Integer) data[1]))
                 .collect(Collectors.toMap(ProductPromotion::productId, ProductPromotion::discount));

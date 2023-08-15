@@ -22,3 +22,15 @@ spring:
     url: jdbc:mysql://localhost:3306/tranh?characterEncoding=utf8
     username: root
     password: CaoVanLam!542000
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: sangdoannguyen7@gmail.com
+    password: pgtobdwhogrbxvhl
+    protocol: smtp
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true

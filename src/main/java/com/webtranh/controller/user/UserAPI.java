@@ -1,8 +1,6 @@
 package com.webtranh.controller.user;
 
-import com.webtranh.controller.user.models.UserRequest;
-import com.webtranh.controller.user.models.UserResponse;
-import com.webtranh.controller.user.models.UserUpdate;
+import com.webtranh.controller.user.models.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -28,4 +26,13 @@ public interface UserAPI {
 
     @DeleteMapping("/{userId}")
     void deleteUser(@PathVariable Integer userId);
+
+    @PatchMapping("/{userId}/change-password")
+    void changePassword(@PathVariable Integer userId, @RequestBody @Valid ChangePassword form);
+
+    @PostMapping("/forgot-password/{email}")
+    void getCodeForgotPassword(@PathVariable String email);
+
+    @PatchMapping("/forgot-password")
+    void forgotPassword(@RequestBody @Valid ForgotPassword form);
 }

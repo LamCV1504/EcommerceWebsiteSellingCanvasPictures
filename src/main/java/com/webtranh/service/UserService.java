@@ -1,15 +1,16 @@
 package com.webtranh.service;
 
+import com.webtranh.config.exception.RequestInvalidException;
 import com.webtranh.config.exception.ResourceNotFoundException;
 import com.webtranh.controller.auth.models.FormLogin;
 import com.webtranh.controller.auth.models.TokenResponse;
-import com.webtranh.controller.user.models.UserRequest;
-import com.webtranh.controller.user.models.UserResponse;
-import com.webtranh.controller.user.models.UserUpdate;
+import com.webtranh.controller.user.models.*;
 import com.webtranh.dto.UserMapper;
 import com.webtranh.repository.category.CategoryEntity;
 import com.webtranh.repository.user.UserEntity;
 import com.webtranh.repository.user.UserRepository;
+import com.webtranh.util.EmailUtil;
+import com.webtranh.util.GenerateCode;
 import com.webtranh.util.JwtUtil;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,7 @@ public class UserService {
     @NonNull final UserMapper userMapper;
     @NonNull final PasswordEncoder passwordEncoder;
     @NonNull final JwtUtil jwtUtil;
+    @NonNull final EmailUtil emailUtil;
 
     public void register(UserRequest user) {
         Optional<UserEntity> foundUser = userRepository.findByEmail(user.email());
@@ -73,5 +75,28 @@ public class UserService {
                             .refreshToken(jwtUtil.generateRefreshToken(foundUser.getUserId()))
                             .userId(foundUser.getUserId())
                             .build();
+    }
+
+    public void changePassword(Integer userId, ChangePassword form) {
+        UserEntity foundUser = userRepository.findById(userId).orElseThrow(ResourceNotFoundException::new);
+        if(!passwordEncoder.matches(form.oldPassword(), foundUser.getPassword()))
+            throw new RequestInvalidException("Mật khẩu cũ sai !!");
+        foundUser.setPassword(passwordEncoder.encode(form.newPassword()));
+        userRepository.save(foundUser);
+    }
+
+    public void getCodeForgotPassword(String email) {
+        UserEntity foundUser = userRepository.findByEmail(email).orElseThrow(ResourceNotFoundException::new);
+        foundUser.setCode(GenerateCode.getAlphaNumericString(6));
+
+        emailUtil.forgotPassword(foundUser);
+        userRepository.save(foundUser);
+    }
+
+    public void forgotPassword(ForgotPassword form) {
+        UserEntity foundUser = userRepository.findByEmail(form.email()).orElseThrow(ResourceNotFoundException::new);
+        if(!foundUser.getCode().equals(form.code())) throw new RequestInvalidException("Mã không tồn tại !!");
+        foundUser.setPassword(passwordEncoder.encode(form.newPassword()));
+        userRepository.save(foundUser);
     }
 }

@@ -13,6 +13,7 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface ProductMapper{
 
+    ProductEntity updateQuantity(Integer quantity, @MappingTarget ProductEntity entity);
     ProductEntity toEntity(ProductRequest dto);
     ProductResponse toDto(ProductEntity entity);
     // List<ProductResponse> toDto(List<ProductEntity> entity);

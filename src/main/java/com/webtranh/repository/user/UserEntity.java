@@ -27,4 +27,5 @@ public class UserEntity {
     private String phone;
     private String image;
     private String password;
+    private String code;
 }

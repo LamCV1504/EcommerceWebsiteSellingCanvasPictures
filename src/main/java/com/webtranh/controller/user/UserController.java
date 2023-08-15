@@ -1,8 +1,6 @@
 package com.webtranh.controller.user;
 
-import com.webtranh.controller.user.models.UserRequest;
-import com.webtranh.controller.user.models.UserResponse;
-import com.webtranh.controller.user.models.UserUpdate;
+import com.webtranh.controller.user.models.*;
 import com.webtranh.service.UserService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -40,5 +38,20 @@ public class UserController implements UserAPI {
     @Override
     public void deleteUser(Integer userId) {
         userService.deleteUser(userId);
+    }
+
+    @Override
+    public void changePassword(Integer userId, ChangePassword form) {
+        userService.changePassword(userId, form);
+    }
+
+    @Override
+    public void getCodeForgotPassword(String email) {
+        userService.getCodeForgotPassword(email);
+    }
+
+    @Override
+    public void forgotPassword(ForgotPassword form) {
+        userService.forgotPassword(form);
     }
 }
